@@ -24,6 +24,14 @@ export class HomePage {
         
     }
     
+    // This is the function that gets called by the click event defined in the html
+    itemSelected(feed):void {
+        
+        alert(feed.data.url); // Simple alert box fox testing purposes
+        
+    }
+    
+    // Here we fetch the content, this function is called by the constructor
     fetchContent():void {
         
         // Initializing the loading

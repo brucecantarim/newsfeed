@@ -8,7 +8,8 @@
 
 <ion-content> <!-- Dinamic content should always be placed here -->
     <ion-list>
-        <ion-item *ngFor="let feed of feeds"><!-- Here we are iterating a loop in the array -->
+        <ion-item *ngFor="let feed of feeds" (click)="itemSelected(feed)">
+          <!-- Here we are iterating a loop in the array and making the Angular's Event Binding -->
            <ion-thumbnail item-left>
                <img src="{{ feed.data.thumbnail }}"><!-- We could also use the [src]="feed.data.thumbnail" sintax here-->
            </ion-thumbnail>
