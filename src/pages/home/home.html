@@ -1,14 +1,19 @@
 <ion-header>
-  <ion-navbar>
-    <ion-title>
-      Ionic Blank
-    </ion-title>
-  </ion-navbar>
+    <ion-navbar> <!-- Here's the app navbar, it can contain the App title, buttons, etc -->
+        <ion-title>
+            Newsfeed
+        </ion-title>
+    </ion-navbar>
 </ion-header>
 
-<ion-content padding>
-  The world is your oyster.
-  <p>
-    If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will be your guide.
-  </p>
+<ion-content> <!-- Dinamic content should always be placed here -->
+    <ion-list>
+        <ion-item *ngFor="let feed of feeds"><!-- Here we are iterating a loop in the array -->
+           <ion-thumbnail item-left>
+               <img src="{{ feed.data.thumbnail }}"><!-- We could also use the [src]="feed.data.thumbnail" sintax here-->
+           </ion-thumbnail>
+            <h2>{{ feed.data.title }}</h2><!-- Is it just me, or this reminds Twig a LOT? -->
+            <p>{{ feed.data.domain }}</p>
+        </ion-item>
+    </ion-list>
 </ion-content>
