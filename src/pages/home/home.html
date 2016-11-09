@@ -1,8 +1,14 @@
 <ion-header>
-    <ion-navbar> <!-- Here's the app navbar, it can contain the App title, buttons, etc -->
+    <ion-navbar><!-- Here's the app navbar, it can contain the App title, buttons, etc -->
         <ion-title>
             Newsfeed
         </ion-title>
+        <ion-buttons end><!-- "end" determines the button placement in the bar -->
+            <button ion-button icon-only (click)="showFilters()">
+                <ion-icon name="funnel">
+                </ion-icon>
+            </button>
+        </ion-buttons>
     </ion-navbar>
 </ion-header>
 
