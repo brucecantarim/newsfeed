@@ -6,15 +6,19 @@
     </ion-navbar>
 </ion-header>
 
-<ion-content> <!-- Dinamic content should always be placed here -->
+<ion-content><!-- Dinamic content should always be placed here -->
     <ion-list>
-        <ion-item *ngFor="let feed of feeds" (click)="itemSelected(feed)">
+        <button ion-item *ngFor="let feed of feeds" (click)="itemSelected(feed.data.url)">
           <!-- Here we are iterating a loop in the array and making the Angular's Event Binding -->
            <ion-thumbnail item-left>
                <img src="{{ feed.data.thumbnail }}"><!-- We could also use the [src]="feed.data.thumbnail" sintax here-->
            </ion-thumbnail>
             <h2>{{ feed.data.title }}</h2><!-- Is it just me, or this reminds Twig a LOT? -->
             <p>{{ feed.data.domain }}</p>
-        </ion-item>
+        </button><!-- Changed to a button to circunvent the event delay problem, adds dark overlay as well -->
     </ion-list>
+    <ion-infinite-scroll><!-- Here we'll fetch older posts! -->
+        <ion-infinite-scroll-content loadingText="Loading more data...">  
+        </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
 </ion-content>
