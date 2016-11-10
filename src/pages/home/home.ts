@@ -2,7 +2,7 @@
 
 // Declaration Block
 import { Component } from '@angular/core';
-import { NavController, LoadingController } from 'ionic-angular'; // Adding loading, for feedback
+import { NavController, LoadingController, ActionSheetController } from 'ionic-angular'; // Adding loading, for feedback
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map'; // From reactiveX, for Observable Array conversion (Only works with this type!)
 import { InAppBrowser } from 'ionic-native';
@@ -27,18 +27,13 @@ export class HomePage {
     private olderPosts: string = "https://www.reddit.com/new.json?after=";
     
     // Instantiating the classes
-    constructor(
-        public navCtrl: NavController, 
-        public http: Http, 
-        public loadingCtrl: LoadingController, 
-        public actionSheetCtrl: ActionSheetController
-    ) { 
+    constructor( public navCtrl: NavController, public http: Http, public loadingCtrl: LoadingController, public actionSheetCtrl: ActionSheetController ) { 
         
         this.fetchContent();
         
     }
     
-    removeFilters():void {
+    removeFilters(): void {
     
         // Removing active filters    
         this.noFilter = this.feeds;
@@ -46,25 +41,26 @@ export class HomePage {
         
     }
     
-    fixThumbnails():void {
+    fixThumbnails(): void {
         
         // Dealing with broken thumbnails
         this.feeds.forEach(( e, i, a ) => {
 
         if (!e.data.thumbnail || e.data.thumbnail.indexOf('b.thumbs.redditmedia.com') === -1 ) {
 
-        // Setting the default thumbnail
+            // Setting the default thumbnail
             e.data.thumbnail = 'http://www.redditstatic.com/icon.png';
 
             }
-        }
+        });
     }
     
     // Here we fetch the content, this function is called by the constructor
-    fetchContent():void {
+    fetchContent(): void { 
     
         // Initializing the loading
         let loading = this.loadingCtrl.create({
+            
             content: 'Fetching content...' // Here we define the message displayed to the user
             
         });
@@ -88,7 +84,6 @@ export class HomePage {
             // Loading is finish, so let's kill the messenger
             loading.dismiss();
                 
-        });
     }
     
     // Here we fetch the new contents when refreshing
@@ -111,8 +106,7 @@ export class HomePage {
         this.removeFilters();
         
         refresher.complete();
-            
-        });   
+               
     }
     
     // Here we fetch the contents for the infinite scroll
@@ -135,8 +129,7 @@ export class HomePage {
         this.removeFilters();
         
         infiniteScroll.complete();
-        
-        });     
+             
     }
     
     // This is the function that gets called by the click event defined in the html
@@ -148,11 +141,9 @@ export class HomePage {
     
     // Filter implementation - I think I can turn this into a loop
     // at least the handler part of it... gotta research!
-    showFilters():void {
+    showFilters(): void {
     
-        // Creating the controller - Made public in the constructor
         let actionSheet = this.actionSheetCtrl.create({
-        
             title: 'Filter options:', 
             buttons: [
                 {
