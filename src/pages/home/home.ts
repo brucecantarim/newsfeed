@@ -52,7 +52,7 @@ export class HomePage {
             e.data.thumbnail = 'http://www.redditstatic.com/icon.png';
 
             }
-        });
+        })
     }
     
     // Here we fetch the content, this function is called by the constructor
@@ -75,15 +75,15 @@ export class HomePage {
                 this.feeds = data.data.children; // Sending the converted result back to the feeds Array
                 
                 this.fixThumbnails();
-
-                })
-            
-            // Storing the feed without filters
-            this.noFilter = this.feeds;
-            
-            // Loading is finish, so let's kill the messenger
-            loading.dismiss();
                 
+                // Storing the feed without filters
+                this.removeFilters();
+
+                // Loading is finish, so let's kill the messenger
+                loading.dismiss();
+
+            });
+  
     }
     
     // Here we fetch the new contents when refreshing
@@ -100,12 +100,12 @@ export class HomePage {
                 this.feeds = data.data.children.concat(this.feeds);
                 
                 this.fixThumbnails();
+                
+                this.removeFilters();
         
-            })
-            
-        this.removeFilters();
+                refresher.complete();
         
-        refresher.complete();
+            });
                
     }
     
@@ -123,12 +123,12 @@ export class HomePage {
                 this.feeds = this.feeds.concat(data.data.children); 
                 
                 this.fixThumbnails();
+                
+                this.removeFilters();
         
-            })
-            
-        this.removeFilters();
+                infiniteScroll.complete();
         
-        infiniteScroll.complete();
+            });
              
     }
     
