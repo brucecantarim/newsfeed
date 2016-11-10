@@ -1,7 +1,7 @@
 {
-  "name": "ionic-hello-world",
-  "author": "Ionic Framework",
-  "homepage": "http://ionicframework.com/",
+  "name": "newsfeed",
+  "author": "Bruce Cantarim",
+  "homepage": "http://brucecantarim.github.io/",
   "private": true,
   "scripts": {
     "build": "ionic-app-scripts build",
@@ -30,7 +30,7 @@
     "zone.js": "0.6.21"
   },
   "devDependencies": {
-    "@ionic/app-scripts": "0.0.39",
+    "@ionic/app-scripts": "0.0.42",
     "typescript": "2.0.6"
   },
   "cordovaPlugins": [
@@ -45,9 +45,9 @@
     "ios",
     {
       "platform": "ios",
-      "version": "",
+      "version": "0.1a",
       "locator": "ios"
     }
   ],
-  "description": "Newsfeed: An Ionic project"
+  "description": "Newsfeed"
 }

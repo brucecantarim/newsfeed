@@ -25,10 +25,24 @@ export class HomePage {
     private url: string = "https://www.reddit.com/new.json"; // Calling reddit feed
     private newerPosts: string = "https://www.reddit.com/new.json?before=";
     private olderPosts: string = "https://www.reddit.com/new.json?after=";
-
-    constructor(public navCtrl: NavController, public http: Http, public loadingCtrl: LoadingController, public actionSheetCtrl: ActionSheetController) { // Instantiating the classes
+    
+    // Instantiating the classes
+    constructor(
+        public navCtrl: NavController, 
+        public http: Http, 
+        public loadingCtrl: LoadingController, 
+        public actionSheetCtrl: ActionSheetController
+    ) { 
         
         this.fetchContent();
+        
+    }
+    
+    removeFilters():void {
+    
+        // Removing active filters    
+        this.noFilter = this.feeds;
+        this.hasFilter = false;
         
     }
     
@@ -44,14 +58,6 @@ export class HomePage {
 
             }
         }
-    }
-    
-    removeFilters():void {
-    
-        // Removing active filters    
-        this.noFilter = this.feeds;
-        this.hasFilter = false;
-        
     }
     
     // Here we fetch the content, this function is called by the constructor
@@ -72,7 +78,7 @@ export class HomePage {
                 
                 this.feeds = data.data.children; // Sending the converted result back to the feeds Array
                 
-                fixThumbnails();
+                this.fixThumbnails();
 
                 })
             
@@ -98,11 +104,11 @@ export class HomePage {
                 // Adding more content to the feeds Array
                 this.feeds = data.data.children.concat(this.feeds);
                 
-                fixThumbnails();
+                this.fixThumbnails();
         
             })
             
-        removeFilters();
+        this.removeFilters();
         
         refresher.complete();
             
@@ -122,11 +128,11 @@ export class HomePage {
                 // Adding more content to the feeds Array               
                 this.feeds = this.feeds.concat(data.data.children); 
                 
-                fixThumbnails();
+                this.fixThumbnails();
         
             })
             
-        removeFilters();
+        this.removeFilters();
         
         infiniteScroll.complete();
         
