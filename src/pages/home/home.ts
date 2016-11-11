@@ -1,11 +1,13 @@
 // Time for the 3Ds: Declaration, Decoration and Definition
 
 // Declaration Block
-import { Component } from '@angular/core';
-import { NavController, LoadingController, ActionSheetController } from 'ionic-angular'; // Adding loading, for feedback
-import { Http } from '@angular/http';
-import 'rxjs/add/operator/map'; // From reactiveX, for Observable Array conversion (Only works with this type!)
+import { Component, ViewChild } from '@angular/core'; // Importing ViewChild component as well
+import { NavController, LoadingController, ActionSheetController, Content } from 'ionic-angular'; // Adding ionic controllers
 import { InAppBrowser } from 'ionic-native';
+import { RedditService } from '../../providers/reddit-service';
+import { FormControl } from '@angular/forms'; // This will be used to improve the search filter
+import 'rxjs/add/operator/debounceTime'; // This will be used to give the user more time to input the search term
+import 'rxjs/add/operator/distinctUntilChanged'; // This will compare the typed terms to avoid unnecessary requisitions
 
 // Decoration Block
 @Component({
@@ -17,22 +19,48 @@ import { InAppBrowser } from 'ionic-native';
 
 // Definition Block
 export class HomePage {
+
+    @ViewChild(Content) content: Content; // Getting the content component reference
     
     public feeds: Array<any>; // This is where the feed addresses will be stored
     public noFilter: Array<any>; // Here we will store our filterless feed
     public hasFilter: boolean = false; // Here we will check if there's a filter active
+    public searchTerm: string = ''; // Declaring the search term variable
+    public searchTermControl: FormControl;
     
     private url: string = "https://www.reddit.com/new.json"; // Calling reddit feed
     private newerPosts: string = "https://www.reddit.com/new.json?before=";
     private olderPosts: string = "https://www.reddit.com/new.json?after=";
     
     // Instantiating the classes
-    constructor( public navCtrl: NavController, public http: Http, public loadingCtrl: LoadingController, public actionSheetCtrl: ActionSheetController ) { 
+    constructor( public navCtrl: NavController, public loadingCtrl: LoadingController, public actionSheetCtrl: ActionSheetController, public redditService: RedditService ) { 
         
+        // Grabbing the feed
         this.fetchContent();
+        
+        // Controlling the search form
+        this.searchTermControl = new FormControl;
+        this.searchTermControl.valueChanges.debounceTime(1000).distinctUntilChanged().subscribe(search => {
+            if(search != '' && search) {
+                this.filterItems();
+            }
+        })
+        
         
     }
     
+    // Search filter function
+    filterItems() {
+    
+        this.hasFilter = false;
+        
+        this.feeds = this.noFilter.filter((item) => {
+            return item.data.title.toLowerCase().indexOf(this.searchTerm.toLowerCase()) > -1;
+        });
+    
+    }
+    
+    // Little function to remove the filters
     removeFilters(): void {
     
         // Removing active filters    
@@ -41,48 +69,30 @@ export class HomePage {
         
     }
     
-    fixThumbnails(): void {
-        
-        // Dealing with broken thumbnails
-        this.feeds.forEach(( e, i, a ) => {
-
-        if (!e.data.thumbnail || e.data.thumbnail.indexOf('b.thumbs.redditmedia.com') === -1 ) {
-
-            // Setting the default thumbnail
-            e.data.thumbnail = 'http://www.redditstatic.com/icon.png';
-
-            }
-        })
-    }
-    
     // Here we fetch the content, this function is called by the constructor
     fetchContent(): void { 
     
         // Initializing the loading
         let loading = this.loadingCtrl.create({
-            
             content: 'Fetching content...' // Here we define the message displayed to the user
-            
         });
         
         // Presenting the loading message to the user
         loading.present();
+        
+        // Fetching the data from our service provider
+        this.redditService.fetchData(this.url).then(data => {
+            
+            // Setting the feed results
+            this.feeds = data;
+        
+            // Storing the feed without filters
+            this.noFilter = this.feeds;
 
-        // Since we injected Http component here, we can use 'this' when calling it
-        this.http.get(this.url).map(res => res.json())
-            .subscribe(data => {
-                
-                this.feeds = data.data.children; // Sending the converted result back to the feeds Array
-                
-                this.fixThumbnails();
-                
-                // Storing the feed without filters
-                this.removeFilters();
-
-                // Loading is finish, so let's kill the messenger
-                loading.dismiss();
-
-            });
+            // Loading is finish, so let's kill the messenger
+            loading.dismiss();
+        
+        })
   
     }
     
@@ -93,19 +103,16 @@ export class HomePage {
         let paramsUrl = this.feeds[0].data.name;
         
         // Fetching recent posts
-        this.http.get(this.newerPosts + paramsUrl).map(res => res.json())
-            .subscribe(data =>{
+        this.redditService.fetchData(this.newerPosts + paramsUrl).then(data => {
         
-                // Adding more content to the feeds Array
-                this.feeds = data.data.children.concat(this.feeds);
+            // Adding more content to the feeds Array
+            this.feeds = data.concat(this.feeds);
                 
-                this.fixThumbnails();
-                
-                this.removeFilters();
+            this.removeFilters();
         
-                refresher.complete();
+            refresher.complete();
         
-            });
+        })
                
     }
     
@@ -116,19 +123,16 @@ export class HomePage {
         let paramsUrl = (this.feeds.length > 0) ? this.feeds[this.feeds.length -1].data.name : "";
         
         // Making another fetch with the new params
-        this.http.get(this.olderPosts + paramsUrl).map(res => res.json())
-            .subscribe (data => {
+        this.redditService.fetchData(this.olderPosts + paramsUrl).then(data => {
                 
-                // Adding more content to the feeds Array               
-                this.feeds = this.feeds.concat(data.data.children); 
+            // Adding more content to the feeds Array               
+            this.feeds = this.feeds.concat(data); 
                 
-                this.fixThumbnails();
-                
-                this.removeFilters();
+            this.removeFilters();
         
-                infiniteScroll.complete();
+            infiniteScroll.complete();
         
-            });
+        })
              
     }
     
@@ -142,6 +146,9 @@ export class HomePage {
     // Filter implementation - I think I can turn this into a loop
     // at least the handler part of it... gotta research!
     showFilters(): void {
+    
+        // Here we use the content component, to make the app always scrolls to the top when adding a filter
+        this.content.scrollToTop();
     
         let actionSheet = this.actionSheetCtrl.create({
             title: 'Filter options:', 

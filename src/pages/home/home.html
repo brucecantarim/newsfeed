@@ -1,7 +1,14 @@
 <ion-header>
-    <ion-navbar><!-- Here's the app navbar, it can contain the App title, buttons, etc -->
+    <ion-navbar color="secondary"><!-- Here's the app navbar, it can contain the App title, buttons, etc -->
         <ion-title>
-            Newsfeed
+            <ion-searchbar
+                [(ngModel)]="searchTerm"
+                [formControl]="searchTermControl"
+                [showCancelButton]=true
+                (ionInput)="filterItems()"
+                placeholder="Type here..."
+            >
+            </ion-searchbar><!-- Event and input binder in the ngModel in the searchbar -->
         </ion-title>
         <ion-buttons end><!-- "end" determines the button placement in the bar -->
             <button ion-button icon-only (click)="showFilters()">
@@ -15,7 +22,7 @@
 <ion-content><!-- Dinamic content should always be placed here -->
     
     <!-- Here we'll fetch new posts! -->
-    <ion-refresher (ionRefresh)="doRefresh($event)">
+    <ion-refresher (ionRefresh)="doRefresh($event)" [pullMin]=90>
         <ion-refresher-content
            pullingIcon="arrow-dropdown"
            pullingText="Pull to refresh"
@@ -32,7 +39,14 @@
                <img src="{{ feed.data.thumbnail }}"><!-- We could also use the [src]="feed.data.thumbnail" sintax here-->
            </ion-thumbnail>
             <h2>{{ feed.data.title }}</h2><!-- Is it just me, or this reminds Twig a LOT? -->
-            <p>{{ feed.data.domain }}</p>
+            <div [ngSwitch]=feed.data.subreddit.toLowerCase()><!-- Category Icons, will only be applyed if they match params -->
+                <p *ngSwitchCase="'askreddit'"><ion-icon name="help-circle"></ion-icon>&nbsp;{{feed.data.domain}}</p>
+                <p *ngSwitchCase="'gaming'"><ion-icon name="logo-playstation"></ion-icon>&nbsp;{{feed.data.domain}}</p>
+                <p *ngSwitchCase="'music'"><ion-icon name="musical-notes"></ion-icon>&nbsp;{{feed.data.domain}}</p>
+                <p *ngSwitchCase="'movies'"><ion-icon name="film"></ion-icon>&nbsp;{{feed.data.domain}}</p>
+                <p *ngSwitchCase="'pics'"><ion-icon name="image"></ion-icon>&nbsp;{{feed.data.domain}}</p>
+                <p *ngSwitchDefault>{{feed.data.domain}}</p>
+            </div>
         </button><!-- Changed to a button to circunvent the event delay problem, adds dark overlay as well -->
     </ion-list>
     

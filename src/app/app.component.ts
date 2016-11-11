@@ -17,6 +17,8 @@ export class MyApp {
       // Here you can do any higher level native things you might need.
       StatusBar.styleDefault();
       Splashscreen.hide();
+      // Changing the status bar color (Requires cordova-plugin-statusbar)
+      StatusBar.backgroundColorByHexString('#ffffff');
     });
   }
 }

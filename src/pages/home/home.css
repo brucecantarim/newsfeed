@@ -1,0 +1,21 @@
+/* line 5, /Users/Bruce/Sites/newsfeed.dev/src/pages/home/home.scss */
+page-home .toolbar-ios ion-title {
+  padding: 0 90px 0 1px; }
+
+/* line 8, /Users/Bruce/Sites/newsfeed.dev/src/pages/home/home.scss */
+page-home .toolbar-ios .searchbar-ios .searchbar-input {
+  background: rgba(0, 0, 0, 0.12); }
+
+/* line 15, /Users/Bruce/Sites/newsfeed.dev/src/pages/home/home.scss */
+page-home .item-md h2, page-home .item-ios h2 {
+  color: rgba(0, 0, 0, 0.87); }
+
+/* line 18, /Users/Bruce/Sites/newsfeed.dev/src/pages/home/home.scss */
+page-home .item-md p, page-home .item-ios p {
+  color: rgba(0, 0, 0, 0.54); }
+
+/* line 25, /Users/Bruce/Sites/newsfeed.dev/src/pages/home/home.scss */
+page-home .item-md h2, page-home .item-md p, page-home .item-ios h2, page-home .item-ios p, page-home .item-wp h2, page-home .item-wp p {
+  white-space: normal; }
+
+/*# sourceMappingURL=home.css.map */
