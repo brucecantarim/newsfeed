@@ -15,3 +15,7 @@ I highly reccomend it!
 - Implement an option to show subreddits results;
 - Think about what to do when the user loses internet connection;
 - Use somekind of native smartphone resource (camera?);
+
+## My 2 cents:
+
+- Maybe I should make the filters make a new request to the api, instead of just filtering the pre-existing request
